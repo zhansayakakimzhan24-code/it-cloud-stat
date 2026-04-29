@@ -3,94 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud IT Monitoring System</title>
+    <title>Cloud IT Monitoring</title>
     <style>
-        :root {
-            --primary: #007AFF;
-            --bg: #f5f7fa;
-            --card: #ffffff;
-            --text: #1d1d1f;
-            --secondary-text: #86868b;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background: var(--card);
-            border-radius: 28px;
-            padding: 40px;
-            width: 90%;
-            max-width: 480px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-        }
-
-        .live-indicator {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: #f2f2f7; padding: 4px 12px; border-radius: 20px;
-            font-size: 12px; font-weight: 600; color: #ff3b30; margin-bottom: 15px;
-        }
-
-        .dot {
-            width: 8px; height: 8px; background-color: #ff3b30;
-            border-radius: 50%; animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        h1 { font-size: 28px; margin: 0 0 10px 0; letter-spacing: -0.5px; color: var(--primary); }
-        .subtitle { color: var(--secondary-text); font-size: 14px; margin-bottom: 30px; }
-
-        select {
-            width: 100%; padding: 14px; border-radius: 14px; border: 1px solid #d2d2d7;
-            font-size: 16px; background: #fff; margin-bottom: 25px; outline: none;
-        }
-
-        .stat-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
-
-        .stat-box {
-            background: #fbfbfd; border: 1px solid #f2f2f7; border-radius: 18px;
-            padding: 20px; transition: all 0.3s ease;
-        }
-
-        .label { font-size: 11px; font-weight: 700; color: var(--secondary-text); text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .value { font-size: 32px; font-weight: 700; color: #000; }
-
-        .architecture { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #d2d2d7; }
-        .tech-item { font-size: 10px; background: #eee; padding: 4px 8px; border-radius: 6px; font-weight: bold; margin: 0 2px; }
-
-        #loader { font-size: 12px; color: var(--primary); margin-bottom: 10px; display: none; }
+        body { background-color: #f5f7fa; color: #1d1d1f; font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .container { background: white; border-radius: 28px; padding: 40px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
+        h1 { color: #007AFF; margin-bottom: 10px; }
+        .subtitle { color: #86868b; font-size: 14px; margin-bottom: 30px; }
+        select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #d2d2d7; font-size: 16px; margin-bottom: 25px; }
+        .stat-box { background: #fbfbfd; border: 1px solid #f2f2f7; border-radius: 18px; padding: 20px; margin-bottom: 15px; }
+        .label { font-size: 11px; font-weight: bold; color: #86868b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .value { font-size: 28px; font-weight: bold; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="live-indicator"><span class="dot"></span> LIVE CLOUD DATA</div>
-    <h1>IT Cloud Stat</h1>
-    <p class="subtitle">IT және Робототехника: Бұлттық мониторинг</p>
-
-    <select id="city" onchange="updateStats()">
-        <option value="160">Қазақстан (Барлығы)</option>
-        <option value="40">Алматы</option>
-        <option value="159">Астана</option>
-        <option value="162">Шымкент</option>
-        <option value="165">Қостанай</option>
-    </select>
-
-    <div id="loader">Бұлттан деректер алынуда...</div>
-
-    <div class="stat-group">
+    <div class="container">
+        <h1>IT Cloud Stat</h1>
+        <p class="subtitle">IT және Робототехника: Бұлттық мониторинг</p>
+        <select id="city" onchange="updateStats()">
+            <option value="160">Қазақстан (Жалпы)</option>
+            <option value="40">Алматы</option>
+            <option value="159">Астана</option>
+            <option value="165">Қостанай</option>
+        </select>
         <div class="stat-box">
-            <span class="label">Табылған бос орындар</span>
+            <span class="label">IT мамандарына бос орындар</span>
             <span id="v-count" class="value">0</span>
         </div>
         <div class="stat-box">
@@ -99,69 +35,38 @@
         </div>
     </div>
 
-    <div class="architecture">
-        <div style="font-size: 12px; color: #86868b; margin-bottom: 10px;">АРХИТЕКТУРА</div>
-        <div class="tech-stack">
-            <span class="tech-item">HH API</span>
-            <span class="tech-item">Cloud</span>
-            <span class="tech-item">JS Fetch</span>
-        </div>
-    </div>
-</div>
+    <script>
+        async function updateStats() {
+            const cityId = document.getElementById('city').value;
+            const vEl = document.getElementById('v-count');
+            const sEl = document.getElementById('v-salary');
 
-<script>
-    async function updateStats() {
-        const cityId = document.getElementById('city').value;
-        const vEl = document.getElementById('v-count');
-        const sEl = document.getElementById('v-salary');
-        const loader = document.getElementById('loader');
+            try {
+                // 'IT' сөзі бойынша іздеу
+                const res = await fetch(`https://api.hh.ru/vacancies?text=IT&area=${cityId}&only_with_salary=true`);
+                const data = await res.json();
 
-        loader.style.display = 'block';
+                // 'found' бар екенін және ол 'undefined' емес екенін тексеру
+                vEl.innerText = (data.found || 0).toLocaleString();
 
-        try {
-            // МҰНДА ӨЗГЕРТІЛДІ: Іздеу сөзін "Программист" деп алдық (көбірек нәтиже үшін)
-            // Және 'only_with_salary=true' параметр қостық, сандар шығу үшін
-            const url = `https://api.hh.ru/vacancies?text=Developer&area=${cityId}&only_with_salary=true&per_page=20`;
-            
-            const res = await fetch(url);
-            const data = await res.json();
-
-            // Бос орындар санын шығару
-            vEl.innerText = data.found.toLocaleString();
-
-            // Жалақыны есептеу (алғашқы 20 вакансияның орташа мәні)
-            if (data.items && data.items.length > 0) {
-                let totalSalary = 0;
-                let count = 0;
-
-                data.items.forEach(item => {
-                    if (item.salary && item.salary.from && item.salary.currency === 'KZT') {
-                        totalSalary += item.salary.from;
-                        count++;
-                    }
-                });
-
-                if (count > 0) {
-                    const avg = Math.round(totalSalary / count);
-                    sEl.innerText = avg.toLocaleString() + " ₸";
+                if (data.items && data.items.length > 0) {
+                    let total = 0, count = 0;
+                    data.items.forEach(item => {
+                        if (item.salary && item.salary.from && item.salary.currency === 'KZT') {
+                            total += item.salary.from;
+                            count++;
+                        }
+                    });
+                    sEl.innerText = count > 0 ? Math.round(total / count).toLocaleString() + " ₸" : "Келісімді";
                 } else {
-                    sEl.innerText = "Келісімді";
+                    sEl.innerText = "Мәлімет жоқ";
                 }
-            } else {
-                sEl.innerText = "Мәлімет жоқ";
+            } catch (e) {
+                vEl.innerText = "Қате";
+                sEl.innerText = "Байланыс жоқ";
             }
-
-        } catch (e) {
-            console.error(e);
-            vEl.innerText = "Қате";
-            sEl.innerText = "Байланыс жоқ";
-        } finally {
-            loader.style.display = 'none';
         }
-    }
-
-    window.onload = updateStats;
-</script>
-
+        window.onload = updateStats;
+    </script>
 </body>
 </html>
