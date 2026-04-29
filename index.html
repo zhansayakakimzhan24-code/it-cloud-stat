@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Cloud Monitoring</title>
+    <title>IT Cloud Stat - Live Monitoring</title>
     <style>
         :root {
             --primary: #007AFF;
@@ -15,7 +15,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
             display: flex;
             align-items: center;
@@ -25,49 +25,50 @@
 
         .container {
             background: var(--card);
-            border-radius: 24px;
-            padding: 30px;
+            border-radius: 28px;
+            padding: 35px;
             width: 90%;
             max-width: 400px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
 
         .badge {
             background: #eef2ff;
             color: var(--primary);
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        h1 { font-size: 24px; margin: 15px 0 5px 0; color: var(--primary); }
-        .desc { font-size: 13px; color: #86868b; margin-bottom: 25px; }
+        h1 { font-size: 26px; margin: 20px 0 8px 0; color: var(--text); }
+        .desc { font-size: 14px; color: #86868b; margin-bottom: 30px; line-height: 1.4; }
 
         select {
-            width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #d2d2d7;
-            font-size: 16px; margin-bottom: 20px; outline: none; background: #fbfbfd;
+            width: 100%; padding: 14px; border-radius: 14px; border: 1px solid #d2d2d7;
+            font-size: 16px; margin-bottom: 25px; outline: none; background: #fbfbfd;
+            cursor: pointer; -webkit-appearance: none;
         }
 
         .stat-box {
-            background: #fbfbfd; border: 1px solid #f2f2f7; border-radius: 16px;
-            padding: 15px; margin-bottom: 12px;
+            background: #fbfbfd; border: 1px solid #f2f2f7; border-radius: 20px;
+            padding: 20px; margin-bottom: 15px; transition: transform 0.2s;
         }
 
-        .label { font-size: 10px; color: #86868b; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .value { font-size: 26px; font-weight: bold; color: #000; }
+        .label { font-size: 11px; color: #86868b; text-transform: uppercase; margin-bottom: 8px; display: block; font-weight: 600; }
+        .value { font-size: 32px; font-weight: 800; color: #000; }
 
-        .footer { margin-top: 20px; font-size: 10px; color: #aeaeb2; border-top: 1px solid #f2f2f7; padding-top: 15px; }
+        .footer { margin-top: 25px; font-size: 11px; color: #aeaeb2; border-top: 1px solid #f2f2f7; padding-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <span class="badge">Live Cloud Monitoring</span>
+    <span class="badge">CLOUD MONITORING</span>
     <h1>IT Cloud Stat</h1>
-    <p class="desc">Қазақстандағы IT нарығының мониторингі</p>
+    <p class="desc">IT және Робототехника: Қазақстан нарығының мониторингі</p>
 
     <select id="city" onchange="updateStats()">
         <option value="160">Қазақстан (Барлығы)</option>
@@ -78,17 +79,17 @@
     </select>
 
     <div class="stat-box">
-        <span class="label">Табылған бос орындар</span>
+        <span class="label">Табылған вакансиялар</span>
         <span id="v-count" class="value">...</span>
     </div>
 
     <div class="stat-box">
-        <span class="label">Орташа жалақы (бастапқы)</span>
+        <span class="label">Орташа жалақы (KZT)</span>
         <span id="v-salary" class="value">...</span>
     </div>
 
     <div class="footer">
-        Data source: HeadHunter API | Infrastructure: Vercel Cloud
+        Infrastructure: Vercel Cloud | Source: HH API
     </div>
 </div>
 
@@ -98,25 +99,25 @@
         const vEl = document.getElementById('v-count');
         const sEl = document.getElementById('v-salary');
 
-        // Жүктелу кезіндегі визуализация
         vEl.innerText = "...";
         sEl.innerText = "...";
 
         try {
-            // HH API-ға сұраныс: "программист" сөзі бойынша, тек жалақысы бар вакансиялар
+            // HH API талабы: Тексеру үшін міндетті түрде User-Agent қажет
             const response = await fetch(`https://api.hh.ru/vacancies?text=программист&area=${cityId}&only_with_salary=true&per_page=20`, {
                 headers: {
-                    'User-Agent': 'VercelCloudMonitoring/1.0'
+                    'User-Agent': 'VercelCloudMonitoring/1.0 (contact: your-email@example.com)'
                 }
             });
 
-            if (!response.ok) throw new Error('API қатесі');
+            if (!response.ok) throw new Error('API Error');
+            
             const data = await response.json();
 
             // Вакансия санын шығару
             vEl.innerText = (data.found || 0).toLocaleString();
 
-            // Жалақыны есептеу (алғашқы 20 вакансияның орташа мәні)
+            // Орташа жалақыны есептеу
             if (data.items && data.items.length > 0) {
                 let sum = 0;
                 let count = 0;
@@ -139,7 +140,7 @@
             }
 
         } catch (error) {
-            console.error(error);
+            console.error('Fetch Error:', error);
             vEl.innerText = "Қате";
             sEl.innerText = "Байланыс жоқ";
         }
@@ -151,3 +152,4 @@
 
 </body>
 </html>
+
